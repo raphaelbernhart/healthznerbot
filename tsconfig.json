@@ -19,7 +19,7 @@
         }
     },
     "include": [
-        "src/**/*", "src/index.ts"
+        "./src/**/*", "./src/index.ts"
     ],
     "typeRoots": [
         "./node_modules/@types"
