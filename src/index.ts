@@ -9,18 +9,20 @@ const hclient = new Cloud(process.env.HETZNER_TOKEN);
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
-
-    // client.users.fetch("290180267824644096").then(u => {
-    //     u.send("MOINI").catch( err => { console.log(err) } );
-    // });
 });
 
 import CommandListener from './Commands/CommandListener'
 const CmdListener = CommandListener.init(client, hclient);
 if(CmdListener.status) console.log(CmdListener.text);
 
-const getToken = () => {
+// client.channels.cache.find(channel => channel.!name === "channelname");
 
-};
+import StatusUpdate from './Worker/StatusUpdate'
+if(typeof process.env.STATUS_UPDATE_INTERVAL === "number") {
+    setInterval(() => {
+        // StatusUpdate(channel, hclient);
+        console.log(client.channels);
+    }, process.env.STATUS_UPDATE_INTERVAL * 3600000);
+}
 
 client.login(process.env.DISCORD_TOKEN);

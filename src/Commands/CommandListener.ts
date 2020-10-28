@@ -1,6 +1,6 @@
 import { Channel, Client, TextChannel } from 'discord.js'
 
-import StatusCommand from './Status.command'
+import StatusUpdate from '../Worker/StatusUpdate'
 
 export default class CommandListener {
     static init(client: Client, hclient: any): Record<string, string|number> {
@@ -8,24 +8,19 @@ export default class CommandListener {
         try {
             client.on("message", msg => {
                 if(msg.channel.type === "text") {
-
                     // Status Update Channel
                     if(msg.channel.name == process.env.DISCORD_CHANNEL && msg.content === "!status") {
-                        StatusCommand(msg.channel, msg, hclient);
+                        StatusUpdate(msg.channel, hclient);
                     }
-
                 }
-                
             });
         } catch(err) {
             console.log(err);
-
             return {
                 status: 0,
                 text: "Command Listener could not be initialized"
             };
         }
-
         return {
             status: 1,
             text: "Command Listener initialized"
@@ -33,7 +28,6 @@ export default class CommandListener {
     }
 
     static disable(client: Client): Record<string, string|number> {
-        // client.removeAllListeners();
         
         const Listener: any = client.listeners("message");
 

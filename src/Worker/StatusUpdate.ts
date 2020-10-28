@@ -1,10 +1,6 @@
-import { Message, TextChannel } from "discord.js";
+import { TextChannel } from "discord.js";
 
-export default async function StatusCommand(channel: TextChannel, msg: Message, hclient: any): Promise<boolean> {
-
-    // hclient.servers.list.then((ServerList: any) => {
-    //     console.log(ServerList.servers)
-    // });
+export default async function StatusCommand(channel: TextChannel, hclient: any): Promise<boolean> {
 
     hclient.getServers().then((res: any) => {
         const servers = res.servers;
@@ -16,7 +12,7 @@ export default async function StatusCommand(channel: TextChannel, msg: Message, 
             const status = server.status;
             if(status != "running") {
                 // if(message.length > 0) message.push("\n");
-                message.push(`❌ Server **${server.name}**(${server.public_net.ipv4.ip}) ist momentan nicht online.`);
+                message.push(`❌ Server **${server.name}**(${server.public_net.ipv4.ip}) ist momentan nicht online. Blöd wa.`);
                 allOnline = false;
             }
         });
