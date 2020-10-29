@@ -1,0 +1,38 @@
+{
+    "name": "healthznerbot",
+    "version": "0.0.1",
+    "description": "A discord bot to get periodically updates of the health status of your hetzner cloud machines.",
+    "main": "index.js",
+    "scripts": {
+        "start": "node .",
+        "dev": "nodemon .",
+        "build": "tsc -b"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/raphaelbernhart/healthznerbot.git"
+    },
+    "keywords": [
+        "discord",
+        "bot",
+        "typescript",
+        "health-check"
+    ],
+    "author": "Raphael Bernhart",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/raphaelbernhart/healthznerbot/issues"
+    },
+    "homepage": "https://github.com/raphaelbernhart/healthznerbot#readme",
+    "dependencies": {
+        "axios": "^0.21.0",
+        "discord.js": "^12.4.1",
+        "dotenv": "^8.2.0",
+        "hetzner-cloud-api": "^1.2.6"
+    },
+    "devDependencies": {
+        "@types/dotenv": "^8.2.0",
+        "@types/node": "^14.14.5",
+        "nodemon": "^2.0.6"
+    }
+}
