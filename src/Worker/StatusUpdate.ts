@@ -1,6 +1,6 @@
 import { TextChannel } from "discord.js";
 
-export default async function StatusCommand(channel: TextChannel, hclient: any): Promise<boolean> {
+export default async function StatusCommand(channel: TextChannel, hclient: any, allOnlineMessage?: string): Promise<boolean> {
 
     hclient.getServers().then((res: any) => {
         const servers = res.servers;
@@ -17,7 +17,7 @@ export default async function StatusCommand(channel: TextChannel, hclient: any):
             }
         });
 
-        if(allOnline) channel.send("Joah glaub die sind noch online...wenn nicht dann pech.");
+        if(allOnline) channel.send(allOnlineMessage ? allOnlineMessage : "Joah glaub die sind noch online...wenn nicht dann pech.");
         else {
             channel.send(message);
             return false

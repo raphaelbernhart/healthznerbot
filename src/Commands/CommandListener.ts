@@ -9,7 +9,7 @@ export default class CommandListener {
             client.on("message", msg => {
                 if(msg.channel.type === "text") {
                     // Status Update Channel
-                    if(msg.channel.name == process.env.DISCORD_CHANNEL && msg.content === "!status") {
+                    if(msg.channel.id == process.env.DISCORD_CHANNEL && msg.content === "!status") {
                         StatusUpdate(msg.channel, hclient);
                     }
                 }
