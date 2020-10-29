@@ -4,7 +4,7 @@
     "description": "A discord bot to get periodically updates of the health status of your hetzner cloud machines.",
     "main": "index.js",
     "scripts": {
-        "start": "node .",
+        "start": "node ./dist/",
         "dev": "nodemon .",
         "build": "tsc -b"
     },
@@ -33,6 +33,7 @@
     "devDependencies": {
         "@types/dotenv": "^8.2.0",
         "@types/node": "^14.14.5",
+        "@types/ws": "^7.2.9",
         "nodemon": "^2.0.6"
     }
 }
