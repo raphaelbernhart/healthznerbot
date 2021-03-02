@@ -4,9 +4,11 @@
     "description": "A discord bot to get periodically updates of the health status of your hetzner cloud machines.",
     "main": "index.js",
     "scripts": {
-        "start": "node ./dist/",
+        "start": "node .",
         "dev": "nodemon .",
-        "build": "tsc -b"
+        "build": "tsc -b",
+        "docker build": "docker build -t registry.raphaelbernhart.at/raphaelbernhart/healthznerbot:$npm_package_version .",
+        "docker push": "docker push registry.raphaelbernhart.at/raphaelbernhart/healthznerbot:$npm_package_version"
     },
     "repository": {
         "type": "git",
@@ -25,7 +27,7 @@
     },
     "homepage": "https://github.com/raphaelbernhart/healthznerbot#readme",
     "dependencies": {
-        "axios": "^0.21.0",
+        "axios": "^0.21.1",
         "discord.js": "^12.4.1",
         "dotenv": "^8.2.0",
         "hetzner-cloud-api": "^1.2.6"
@@ -34,6 +36,7 @@
         "@types/dotenv": "^8.2.0",
         "@types/node": "^14.14.5",
         "@types/ws": "^7.2.9",
-        "nodemon": "^2.0.6"
+        "nodemon": "^2.0.6",
+        "typescript": "^4.2.2"
     }
 }
