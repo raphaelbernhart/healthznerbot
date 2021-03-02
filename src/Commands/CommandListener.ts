@@ -1,6 +1,8 @@
 import { Channel, Client, TextChannel } from 'discord.js'
 
 import StatusUpdate from '../Worker/StatusUpdate'
+import StatusCommand from './StatusCommand'
+import ServersCommand from './ServersCommand'
 
 export default class CommandListener {
     static init(client: Client, hclient: any): Record<string, string|number> {
@@ -8,10 +10,8 @@ export default class CommandListener {
         try {
             client.on("message", msg => {
                 if(msg.channel.type === "text") {
-                    // Status Update Channel
-                    if(msg.channel.id == process.env.DISCORD_CHANNEL && msg.content === "!status") {
-                        StatusUpdate(msg.channel, hclient);
-                    }
+                    StatusCommand(msg, hclient)
+                    ServersCommand(msg, hclient)
                 }
             });
         } catch(err) {
