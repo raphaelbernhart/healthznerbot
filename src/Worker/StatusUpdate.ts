@@ -1,28 +1,42 @@
 import { TextChannel } from "discord.js";
 
-export default async function StatusCommand(channel: TextChannel, hclient: any, allOnlineMessage?: string): Promise<boolean> {
+function arrayEquals(a: any, b: any) {
+    return Array.isArray(a) &&
+      Array.isArray(b) &&
+      a.length === b.length &&
+      a.every((val, index) => val === b[index]);
+  }
 
-    hclient.getServers().then((res: any) => {
+export default async function StatusCommand(channel: TextChannel, hclient: any, allOnlineMessage?: string, lastUpdate?: Array<number> | boolean): Promise<Array<number> | boolean> {
+
+    return await hclient.getServers().then(async (res: any): Promise<Array<number> | boolean> => {
         const servers = res.servers;
         let allOnline = true;
         let message: Array<any> = [];
+        let stoppedServers: Array<number> = [];
 
         // Check if any server isn't online
         servers.forEach((server: any) => {
             const status = server.status;
             if(status != "running") {
                 // if(message.length > 0) message.push("\n");
-                message.push(`❌ Server **${server.name}**(${server.public_net.ipv4.ip}) ist momentan nicht online. Blöd wa.`);
+                message.push(`❌ Server **${server.name}**(${server.public_net.ipv4.ip}) ist momentan offline.`);
+                stoppedServers.push(server.id);
                 allOnline = false;
             }
         });
 
-        if(allOnline) channel.send(allOnlineMessage ? allOnlineMessage : "Joah glaub die sind noch online...wenn nicht dann pech.");
+        if(allOnline) {
+            if(allOnlineMessage) {
+                channel.send(allOnlineMessage);
+                return true;
+            }
+        }
         else {
-            channel.send(message);
-            return false
+            if(!arrayEquals(lastUpdate, stoppedServers)) {
+                channel.send(message);
+            }
+            return stoppedServers;
         };
     });
-
-    return true;
 }

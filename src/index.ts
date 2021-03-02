@@ -12,13 +12,15 @@ import StatusUpdate from './Worker/StatusUpdate'
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 
-    setInterval(() => {
+    let lastUpdate: Array<number> | boolean;
+
+    setInterval(async () => {
         let channel: Channel = client.channels.cache.get(process.env.DISCORD_CHANNEL);
         if(channel.type == "text") {
             let channel = <TextChannel> client.channels.cache.get(process.env.DISCORD_CHANNEL);
-            StatusUpdate(channel, hclient, "Alle Server sind noch online!");
+            lastUpdate = await StatusUpdate(channel, hclient, undefined, lastUpdate);
         }
-    }, parseFloat(process.env.STATUS_UPDATE_INTERVAL) * 3600000);
+    }, parseFloat(process.env.STATUS_UPDATE_INTERVAL) * 60000);
 
 });
 
