@@ -4,23 +4,41 @@ const client = new Discord.Client();
 import dotenv from 'dotenv';
 dotenv.config();
 
+import ConfigCheck from './helper/ConfigCheck'
+ConfigCheck()
+
 const Cloud = require('hetzner-cloud-api');
 const hclient = new Cloud(process.env.HETZNER_TOKEN);
 
 import StatusUpdate from './Worker/StatusUpdate'
+import ServersUpdate from './Worker/ServersUpdate'
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 
     let lastUpdate: Array<number> | boolean;
 
-    setInterval(async () => {
-        let channel: Channel = client.channels.cache.get(process.env.DISCORD_CHANNEL);
-        if(channel.type == "text") {
-            let channel = <TextChannel> client.channels.cache.get(process.env.DISCORD_CHANNEL);
-            lastUpdate = await StatusUpdate(channel, hclient, undefined, lastUpdate);
-        }
-    }, parseFloat(process.env.STATUS_UPDATE_INTERVAL) * 60000);
+    // Status update Interval
+    if (parseFloat(process.env.STATUS_UPDATE_INTERVAL) !== 0) {
+        setInterval(async () => {
+            let channel: Channel = client.channels.cache.get(process.env.DISCORD_CHANNEL);
+            if(channel.type == "text") {
+                let channel = <TextChannel> client.channels.cache.get(process.env.DISCORD_CHANNEL);
+                lastUpdate = await StatusUpdate(channel, hclient, undefined, lastUpdate);
+            }
+        }, parseFloat(process.env.STATUS_UPDATE_INTERVAL) * 60000);
+    }
+
+    // Server Metrics Interval
+    if (parseFloat(process.env.SERVER_METRICS_PERIOD) !== 0) {
+        setInterval(async () => {
+            let channel: Channel = client.channels.cache.get(process.env.DISCORD_CHANNEL);
+            if(channel.type == "text") {
+                let channel = <TextChannel> client.channels.cache.get(process.env.DISCORD_CHANNEL);
+                await ServersUpdate(channel, hclient)
+            }
+        }, parseFloat(process.env.SERVER_METRICS_PERIOD) * 60000);
+    }
 
 });
 
