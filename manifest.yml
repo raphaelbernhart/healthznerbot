@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: healthznerbot
+  name: healthznerbot-k8s-main
   namespace: personal
 spec:
   selector:
@@ -12,6 +12,7 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 0
+  minReadySeconds: 15
   template:
     metadata:
       labels:
@@ -19,14 +20,23 @@ spec:
     spec:
       containers:
       - name: healthznerbot
-        image: registry.raphaelbernhart.at/raphaelbernhart/healthznerbot:0.0.2
+        image: registry.raphaelbernhart.at/raphaelbernhart/healthznerbot:1.0.0
         env:
         - name: NODE_ENV
           value: production
         - name: STATUS_UPDATE_INTERVAL
           value: '1'
         - name: SERVER_METRICS_PERIOD
-          value: '15'
+          value: '0'
+        - name: LANGUAGE
+          value: 'de'
+        - name: MEME_MODE
+          value: 'true'
+        - name: GIPHY_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: healthznerbot-secrets
+              key: GIPHY_API_KEY
         - name: DISCORD_TOKEN
           valueFrom:
             secretKeyRef:

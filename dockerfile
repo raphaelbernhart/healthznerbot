@@ -15,6 +15,7 @@ COPY package*.json ./
 
 RUN npm install --production
 
+ADD /src/assets /app/assets
 COPY --from=build /app/dist /app
 
 CMD [ "npm", "start" ]
