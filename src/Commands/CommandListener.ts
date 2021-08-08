@@ -11,7 +11,7 @@ export default class CommandListener {
             client.on("message", msg => {
                 if(msg.channel.type === "text") {
                     StatusCommand(msg, hclient)
-                    ServersCommand(msg, hclient)
+                    ServersCommand(msg, hclient, client)
                 }
             });
         } catch(err) {

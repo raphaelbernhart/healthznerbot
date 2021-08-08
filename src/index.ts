@@ -35,7 +35,8 @@ client.on('ready', () => {
             let channel: Channel = client.channels.cache.get(process.env.DISCORD_CHANNEL);
             if(channel.type == "text") {
                 let channel = <TextChannel> client.channels.cache.get(process.env.DISCORD_CHANNEL);
-                await ServersUpdate(channel, hclient)
+                const msg: any = null;
+                await ServersUpdate(msg, hclient, client)
             }
         }, parseFloat(process.env.SERVER_METRICS_PERIOD) * 60000);
     }

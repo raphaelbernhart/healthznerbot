@@ -1,9 +1,10 @@
-import Discord, { Channel } from 'discord.js'
+import Discord, { Client, Message, TextChannel } from 'discord.js'
 import axios from 'axios'
 
-export default async function ServersUpdate(channel: any, hclient: any): Promise<boolean> {
+export default async function ServersUpdate(msg: Message, hclient: any, client: Client): Promise<boolean> {
     
     let message: Array<any> = [];
+    let channel = <TextChannel> client.channels.cache.get(process.env.DISCORD_CHANNEL);
 
     hclient.getServers().then((res: Record<string, any>) => {
 
