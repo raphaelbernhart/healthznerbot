@@ -1,17 +1,23 @@
 import { Channel, Client, TextChannel } from 'discord.js'
 
-import StatusUpdate from '../Worker/StatusUpdate'
-import StatusCommand from './StatusCommand'
-import ServersCommand from './ServersCommand'
+import commands, { ICommand } from './CommandsList'
 
 export default class CommandListener {
     static init(client: Client, hclient: any): Record<string, string|number> {
 
         try {
             client.on("message", msg => {
+                // Check if channel is a text channel
                 if(msg.channel.type === "text") {
-                    StatusCommand(msg, hclient)
-                    ServersCommand(msg, hclient, client)
+                    // check if it is the right channel
+                    if(msg.channel.id == process.env.DISCORD_CHANNEL) {
+                        // Loop over all commands
+                        commands.forEach((c: ICommand) => {
+                            const cmdString: string = msg.content.substring(1)
+                            // Check if cmdString and sent message match
+                            if (c.functionString.includes(cmdString)) c.command(msg, hclient, client)
+                        })
+                    }
                 }
             });
         } catch(err) {
