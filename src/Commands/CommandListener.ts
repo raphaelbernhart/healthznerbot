@@ -1,4 +1,5 @@
 import { Channel, Client, TextChannel } from 'discord.js'
+import Logger from '../helper/Logger';
 
 import commands, { ICommand } from './CommandsList'
 
@@ -21,7 +22,7 @@ export default class CommandListener {
                 }
             });
         } catch(err) {
-            console.log(err);
+            Logger.error(err as string)
             return {
                 status: 0,
                 text: "Command Listener could not be initialized"

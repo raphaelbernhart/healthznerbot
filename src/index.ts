@@ -7,6 +7,8 @@ dotenv.config();
 import ConfigCheck from './helper/ConfigCheck'
 ConfigCheck()
 
+import Logger from './helper/Logger'
+
 const Cloud = require('hetzner-cloud-api');
 const hclient = new Cloud(process.env.HETZNER_TOKEN);
 
@@ -14,7 +16,7 @@ import StatusUpdate from './Worker/StatusUpdate'
 import ServersUpdate from './Worker/ServersUpdate'
 
 client.on('ready', () => {
-    console.log(`Logged in as ${client.user.tag}!`);
+    Logger.success(`Logged in as ${client.user.tag}!`)
 
     let lastUpdate: Array<number> | boolean;
 
@@ -45,6 +47,6 @@ client.on('ready', () => {
 
 import CommandListener from './Commands/CommandListener'
 const CmdListener = CommandListener.init(client, hclient);
-if(CmdListener.status) console.log(CmdListener.text);
+if(CmdListener.status) Logger.info(CmdListener.text as string);
 
 client.login(process.env.DISCORD_TOKEN);
