@@ -26,6 +26,8 @@ spec:
           value: production
         - name: STATUS_UPDATE_INTERVAL
           value: '5'
+        - name: SERVER_METRICS_INTERVAL
+          value: '0'
         - name: SERVER_METRICS_PERIOD
           value: '2.5'
         - name: LANGUAGE

@@ -48,7 +48,7 @@ const main = async () => {
     }
 
     // Server Metrics Interval
-    if (parseFloat(process.env.SERVER_METRICS_PERIOD) !== 0) {
+    if (parseFloat(process.env.SERVER_METRICS_INTERVAL) !== 0) {
         setInterval(async () => {
             let channel: Channel = client.channels.cache.get(process.env.DISCORD_CHANNEL);
             if(channel.type == "text") {
@@ -56,7 +56,7 @@ const main = async () => {
                 const msg: any = null;
                 await ServersUpdate(msg, HCloudClients, client)
             }
-        }, parseFloat(process.env.SERVER_METRICS_PERIOD) * 60000);
+        }, parseFloat(process.env.SERVER_METRICS_INTERVAL) * 60000);
     }
 
     const CmdListener = CommandListener.init(client, HCloudClients);
