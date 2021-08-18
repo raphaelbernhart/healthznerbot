@@ -1,6 +1,9 @@
 import axios from "axios";
-import { TextChannel, MessageAttachment } from "discord.js";
+import { TextChannel, MessageAttachment, Message } from "discord.js";
 import path from "path";
+import Logger from "../helper/Logger";
+
+import Discord from 'discord.js'
 
 import de from '../lang/de'
 import en from '../lang/en'
@@ -12,18 +15,28 @@ function arrayEquals(a: any, b: any) {
       a.every((val, index) => val === b[index]);
 }
 
-export default async function StatusCommand(channel: TextChannel, hclient: any, allOnlineMessage?: string, lastUpdate?: Array<number> | boolean): Promise<Array<number> | boolean> {
+export default async function StatusCommand(channel: TextChannel, HCloudClients: Array<HetznerClient>, allOnlineMessage?: string, lastUpdate?: Array<number> | boolean): Promise<Array<number> | boolean> {
 
-    return await hclient.getServers().then(async (res: any): Promise<Array<number> | boolean> => {
-        const servers = res.servers;
+    try {
+        let servers: Array<Server> = []
+        
+        for(let i = 0; i < HCloudClients.length; i++) {
+            const hclient = HCloudClients[i];
+
+            const serverList = await hclient.servers.list()
+            serverList.servers.forEach((s) => {
+                servers.push(s)
+            })
+        }
+    
         let allOnline = true;
         let message: Array<any> = [];
         let stoppedServers: Array<number> = [];
 
         // Check if any server isn't online
-        servers.forEach((server: any) => {
+        servers.forEach((server) => {
             const status = server.status;
-            if(status != "running") {
+            if(status != 'running') {
                 // if(message.length > 0) message.push("\n");
                 if (process.env.LANGUAGE === 'de') message.push(de.status.failed(server));
                 else if (process.env.LANGUAGE === 'en') message.push(en.status.failed(server));
@@ -32,9 +45,9 @@ export default async function StatusCommand(channel: TextChannel, hclient: any, 
             }
         });
 
+
         if(allOnline) {
             if(allOnlineMessage) {
-                channel.send(allOnlineMessage);
 
                 // Meme Mode
                 if (process.env.MEME_MODE === 'true') {
@@ -43,8 +56,16 @@ export default async function StatusCommand(channel: TextChannel, hclient: any, 
                     const url = res.data.data.fixed_width_downsampled_url
                     const attachment = new MessageAttachment(url);
                     const logo = new MessageAttachment(path.join(__dirname + '/../assets/giphy-logo.png'))
-                    channel.send(attachment)
-                    channel.send(logo)
+
+                    channel.send({
+                        content: allOnlineMessage,
+                        embed: {
+                            image: { url: url }
+                        }
+                    })
+                    .then(() => {
+                        channel.send(logo)
+                    })
                 }
                 return true;
             }
@@ -54,6 +75,9 @@ export default async function StatusCommand(channel: TextChannel, hclient: any, 
                 channel.send(message);
             }
             return stoppedServers;
-        };
-    });
+        }
+        
+    } catch(err: any) {
+        Logger.error(err)
+    }
 }

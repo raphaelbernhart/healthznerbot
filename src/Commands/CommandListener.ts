@@ -4,7 +4,7 @@ import Logger from '../helper/Logger';
 import commands, { ICommand } from './CommandsList'
 
 export default class CommandListener {
-    static init(client: Client, hclient: any): Record<string, string|number> {
+    static init(client: Client, HCloudClients: any): Record<string, string|number> {
 
         try {
             client.on("message", msg => {
@@ -16,7 +16,7 @@ export default class CommandListener {
                         commands.forEach((c: ICommand) => {
                             const cmdString: string = msg.content.substring(1)
                             // Check if cmdString and sent message match
-                            if (c.functionString.includes(cmdString)) c.command(msg, hclient, client)
+                            if (c.functionString.includes(cmdString)) c.command(msg, HCloudClients, client)
                         })
                     }
                 }
