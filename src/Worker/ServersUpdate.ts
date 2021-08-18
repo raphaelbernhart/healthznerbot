@@ -1,34 +1,81 @@
 import Discord, { Client, Message, TextChannel } from 'discord.js'
 import axios from 'axios'
 
-export default async function ServersUpdate(msg: Message, hclient: any, client: Client): Promise<boolean> {
+import Logger from '../helper/Logger'
+import de from '../lang/de'
+import en from '../lang/en'
+
+const getApiKeys = (): Array<string> => {
+    let i = 1;
+    let currentHToken: string = process.env[`HETZNER_TOKEN_${i}`]
+    const tokenArray: Array<string> = []
+
+    while (currentHToken !== undefined) {
+        i++;
+
+        tokenArray.push(currentHToken)
+
+        // Update current Token
+        currentHToken = process.env[`HETZNER_TOKEN_${i}`]
+    }
+
+    return tokenArray
+}
+
+export default async function ServersUpdate(msg: Message, HCloudClients: Array<HetznerClient>, client: Client): Promise<any> {
     
-    let message: Array<any> = [];
     let channel = <TextChannel> client.channels.cache.get(process.env.DISCORD_CHANNEL);
+    let noPrivateNetworkText: string
+    if (process.env.LANGUAGE === 'de') noPrivateNetworkText = de.metrics.noPrivateNet
+    else noPrivateNetworkText = en.metrics.noPrivateNet
 
-    hclient.getServers().then((res: Record<string, any>) => {
+    try {
+        const hTokens = getApiKeys()
 
-        res.servers.forEach(async (server: Record<string, any>) => {
-            const id = server.id;
-            const startDate = new Date(new Date() as any - parseFloat(process.env.SERVER_METRICS_PERIOD) * 60000).toISOString();
-            const endDate = new Date().toISOString();
-            const imageName = server.image.name
-            const privateNet = server.private_net[0].network
+        // Loop over Projects
+        for(let i = 0; i < hTokens.length; i++) {
+            const token = hTokens[i]
 
-            const resNetwork = await axios.get(`https://api.hetzner.cloud/v1/networks/${privateNet}`, {
+            const projServersRes = await axios.get(`https://api.hetzner.cloud/v1/servers`, {
                 headers: {
-                    Authorization: `Bearer ${process.env.HETZNER_TOKEN}`
+                    Authorization: `Bearer ${token}`
                 }
             })
+            const servers = projServersRes.data.servers
 
-            const privateNetName = resNetwork.data.network.name
+            for (let i = 0; i < servers.length; i++) {
+                const server = servers[i]
+    
+                const id = server.id;
+                const startDate = new Date(new Date() as any - parseFloat(process.env.SERVER_METRICS_PERIOD) * 60000).toISOString();
+                const endDate = new Date().toISOString();
+                const imageName = server.image.name
+                const privateNet = server.private_net.length >= 1 ? server.private_net[0].network : false
 
-            let cpuAverage: number;
-            let networkInAverage: number;
-            let networkOutAverage: number;
+                let resNetwork
+    
+                if (server.private_net.length >= 1) {
+                    resNetwork = await axios.get(`https://api.hetzner.cloud/v1/networks/${privateNet}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+                }
+    
+                const privateNetName = privateNet ? resNetwork.data.network.name : noPrivateNetworkText
+    
+                let cpuAverage: number;
+                let networkInAverage: number;
+                let networkOutAverage: number;
 
-            await hclient.getServerMetrics(id, `?type=cpu,network&start=${startDate}&end=${endDate}`).then(async (res: any) => {
-                const metrics = res.metrics
+                // Get Server Metrics
+                const resMetrics = await axios.get(`https://api.hetzner.cloud/v1/servers/${id}/metrics?type=cpu,network&start=${startDate}&end=${endDate}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+
+                const metrics = resMetrics.data.metrics
                 const ts = metrics.time_series
                 const cpuValues = ts.cpu.values;
                 const netInValues = ts["network.0.bandwidth.in"].values;
@@ -41,11 +88,11 @@ export default async function ServersUpdate(msg: Message, hclient: any, client: 
                 const netOutLength = cpuValues.length;
                 networkOutAverage = netOutValues.map((_: string[]) => parseFloat(_[1])).reduce((a: any, b: any) => a + b, 0) / netOutLength
 
-                let serverRes: Record<any, any> = {
+                let serverRes: Record<string, any> = {
                     name: server.name,
                     status: server.status,
                     publicIp: server.public_net.ipv4.ip,
-                    privateIp: server.private_net[0] ? server.private_net[0].ip : 'Kein privates Netzwerk',
+                    privateIp: server.private_net[0] ? server.private_net[0].ip : noPrivateNetworkText,
                     metrics: {
                         cpu: cpuAverage,
                         netIn: networkInAverage,
@@ -79,8 +126,9 @@ export default async function ServersUpdate(msg: Message, hclient: any, client: 
                 .setFooter('Healthzner Bot', 'https://github.com/raphaelbernhart/healthznerbot');
 
                 channel.send(msg)
-            })
-        });
-    })
-    return true
+            }
+        }
+    } catch(err: any) {
+        Logger.error(err)
+    }
 }

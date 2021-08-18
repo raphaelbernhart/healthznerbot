@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: healthznerbot-k8s-main
+  name: healthznerbot
   namespace: personal
 spec:
   selector:
@@ -20,14 +20,16 @@ spec:
     spec:
       containers:
       - name: healthznerbot
-        image: registry.raphaelbernhart.at/raphaelbernhart/healthznerbot:1.0.1
+        image: registry.raphaelbernhart.at/raphaelbernhart/healthznerbot:1.1.0
         env:
         - name: NODE_ENV
           value: production
         - name: STATUS_UPDATE_INTERVAL
-          value: '1'
-        - name: SERVER_METRICS_PERIOD
+          value: '5'
+        - name: SERVER_METRICS_INTERVAL
           value: '0'
+        - name: SERVER_METRICS_PERIOD
+          value: '2.5'
         - name: LANGUAGE
           value: 'de'
         - name: MEME_MODE
@@ -47,15 +49,23 @@ spec:
             secretKeyRef:
               name: healthznerbot-secrets
               key: DISCORD_CHANNEL
-        - name: HETZNER_TOKEN
+        - name: HETZNER_TOKEN_1
           valueFrom:
             secretKeyRef:
               name: healthznerbot-secrets
-              key: HETZNER_TOKEN
+              key: HETZNER_TOKEN_1
+        - name: HETZNER_TOKEN_2
+          valueFrom:
+            secretKeyRef:
+              name: healthznerbot-secrets
+              key: HETZNER_TOKEN_2
         imagePullPolicy: Always
         resources:
           requests:
+            memory: "65M"
+            cpu: "30m"
+          limits:
             memory: "100M"
-            cpu: "100m"
+            cpu: "50m"
       imagePullSecrets:
       - name: regcred

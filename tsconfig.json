@@ -1,4 +1,7 @@
 {
+    "ts-node": {
+        "files": true
+    },
     "compilerOptions": {
         "module": "commonjs",
         "esModuleInterop": true,
@@ -14,7 +17,8 @@
         "baseUrl": ".",
         "paths": {
             "*": [
-                "node_modules/*"
+                "node_modules/*",
+                "src/types/*"
             ]
         }
     },
@@ -22,6 +26,7 @@
         "./src/**/*", "./src/index.ts"
     ],
     "typeRoots": [
-        "./node_modules/@types"
+        "./node_modules/@types",
+        "./src/types"
     ],
 }

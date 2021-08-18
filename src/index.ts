@@ -1,20 +1,37 @@
 import Discord, { Channel, TextChannel } from 'discord.js';
-const client = new Discord.Client();
-
+import axios from 'axios';
 import dotenv from 'dotenv';
+
+const client = new Discord.Client();
 dotenv.config();
 
 import ConfigCheck from './helper/ConfigCheck'
 ConfigCheck()
 
-const Cloud = require('hetzner-cloud-api');
-const hclient = new Cloud(process.env.HETZNER_TOKEN);
+import Logger from './helper/Logger'
 
+const Cloud = require('hetzner-cloud-api');
+const hclient = new Cloud(process.env.HETZNER_TOKEN_1);
+
+import CommandListener from './Commands/CommandListener'
 import StatusUpdate from './Worker/StatusUpdate'
 import ServersUpdate from './Worker/ServersUpdate'
 
-client.on('ready', () => {
-    console.log(`Logged in as ${client.user.tag}!`);
+import HCloudClientsInit from './services/HCloudClientsInit'
+
+const main = async () => {
+    // Login on Discord Server
+    try {
+        client.on('ready', () => {
+            Logger.success(`(DISCORD) Logged in as ${client.user.tag}!`)
+        })
+    } catch(err: any) {
+        Logger.error(err)
+    }
+
+    await client.login(process.env.DISCORD_TOKEN);
+
+    const HCloudClients: Array<HetznerClient> = await HCloudClientsInit()
 
     let lastUpdate: Array<number> | boolean;
 
@@ -24,27 +41,26 @@ client.on('ready', () => {
             let channel: Channel = client.channels.cache.get(process.env.DISCORD_CHANNEL);
             if(channel.type == "text") {
                 let channel = <TextChannel> client.channels.cache.get(process.env.DISCORD_CHANNEL);
-                lastUpdate = await StatusUpdate(channel, hclient, undefined, lastUpdate);
+
+                lastUpdate = await StatusUpdate(channel, HCloudClients, undefined, lastUpdate);
             }
         }, parseFloat(process.env.STATUS_UPDATE_INTERVAL) * 60000);
     }
 
     // Server Metrics Interval
-    if (parseFloat(process.env.SERVER_METRICS_PERIOD) !== 0) {
+    if (parseFloat(process.env.SERVER_METRICS_INTERVAL) !== 0) {
         setInterval(async () => {
             let channel: Channel = client.channels.cache.get(process.env.DISCORD_CHANNEL);
             if(channel.type == "text") {
                 let channel = <TextChannel> client.channels.cache.get(process.env.DISCORD_CHANNEL);
                 const msg: any = null;
-                await ServersUpdate(msg, hclient, client)
+                await ServersUpdate(msg, HCloudClients, client)
             }
-        }, parseFloat(process.env.SERVER_METRICS_PERIOD) * 60000);
+        }, parseFloat(process.env.SERVER_METRICS_INTERVAL) * 60000);
     }
 
-});
+    const CmdListener = CommandListener.init(client, HCloudClients);
+    if(CmdListener.status) Logger.info(CmdListener.text as string);
+}
 
-import CommandListener from './Commands/CommandListener'
-const CmdListener = CommandListener.init(client, hclient);
-if(CmdListener.status) console.log(CmdListener.text);
-
-client.login(process.env.DISCORD_TOKEN);
+main()
