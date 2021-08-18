@@ -10,9 +10,6 @@ ConfigCheck()
 
 import Logger from './helper/Logger'
 
-const Cloud = require('hetzner-cloud-api');
-const hclient = new Cloud(process.env.HETZNER_TOKEN_1);
-
 import CommandListener from './Commands/CommandListener'
 import StatusUpdate from './Worker/StatusUpdate'
 import ServersUpdate from './Worker/ServersUpdate'
