@@ -30,6 +30,7 @@
         "axios": "^0.21.1",
         "discord.js": "^12.4.1",
         "dotenv": "^8.2.0",
+        "hcloud-js": "^1.4.1",
         "hetzner-cloud-api": "^1.2.6"
     },
     "devDependencies": {
