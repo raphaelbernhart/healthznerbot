@@ -11,7 +11,7 @@ A discord bot to periodically get updates of the health status of your hetzner c
 7. And finally run `npm run start` to run the bot
 
 ## Commands
-`!servers` - Lists all Servers in a project including information like cpu and network workload and IP's</br>
+`!servers / !metrics` - Lists all Servers in a project including information like cpu and network workload and IP's</br>
 ![healthznerbot-ui.png](https://assets.raphaelbernhart.at/images/healthznerbot/healthznerbot-ui.png)
 `!status` - Get the current Status of the Servers. Returning '**Alle Server sind online!**' if all Servers are up. Returns '**:x: Server SERVERNAME(IP_ADDR) ist momentan offline.**' (English is also available)
 
