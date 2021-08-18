@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: healthznerbot
-        image: registry.raphaelbernhart.at/raphaelbernhart/healthznerbot:1.1.0
+        image: registry.raphaelbernhart.at/raphaelbernhart/healthznerbot:1.1.1
         env:
         - name: NODE_ENV
           value: production
