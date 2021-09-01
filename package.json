@@ -28,7 +28,7 @@
     "homepage": "https://github.com/raphaelbernhart/healthznerbot#readme",
     "dependencies": {
         "axios": "^0.21.1",
-        "discord.js": "^12.4.1",
+        "discord.js": "^13.0.0",
         "dotenv": "^8.2.0",
         "hcloud-js": "^1.4.1"
     },
