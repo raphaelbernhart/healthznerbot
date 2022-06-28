@@ -1,6 +1,6 @@
 {
     "name": "healthznerbot",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "A discord bot to get periodically updates of the health status of your hetzner cloud machines.",
     "main": "index.js",
     "scripts": {
