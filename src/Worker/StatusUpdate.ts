@@ -72,13 +72,15 @@ export default async function StatusCommand(
                     channel
                         .send({
                             content: allOnlineMessage,
-                            embed: {
-                                image: { url: url },
-                            },
+                            embeds: [
+                                {
+                                    image: { url },
+                                },
+                            ],
                         })
                         .catch((err) => console.log(new Error(err)))
                         .then(() => {
-                            channel.send(logo);
+                            channel.send(logo as any);
                         });
 
                     return true;
@@ -95,11 +97,12 @@ export default async function StatusCommand(
             }
         } else {
             if (!arrayEquals(lastUpdate, stoppedServers)) {
-                channel.send(message);
+                channel.send(message as any);
             }
             return stoppedServers;
         }
     } catch (err: any) {
         Logger.error(err);
     }
+    return false;
 }

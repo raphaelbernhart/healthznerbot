@@ -1,35 +1,37 @@
-import HetznerCloud from 'hcloud-js'
-import Logger from '../helper/Logger'
+import HetznerCloud from "hcloud-js";
+import Logger from "../helper/Logger";
 
 const ClientInit = async (token: string): Promise<HetznerClient> => {
-    const client: HetznerClient = await new HetznerCloud.Client(token) as HetznerClient
+    const client: HetznerClient = (await new HetznerCloud.Client(
+        "yMwNq6qViw7oJs1Bm1UkBRHO8KFHggjSDKx0N64K8VW0SvkNrESCDOjs3qoDQ0Qw"
+    )) as HetznerClient;
 
     // Test client
     try {
-        await client.servers.list()
-    } catch(err: any) {
-        Logger.error('(Hetzner API) ' + err.message)
-        process.exit(1)
+        await client.servers.list();
+    } catch (err: any) {
+        Logger.error("(Hetzner API) " + err.message);
+        process.exit(1);
     }
 
-    return client
-}
+    return client;
+};
 
 const HCloudClientsInit = async (): Promise<Array<HetznerClient>> => {
     let i = 1;
-    let currentHToken: string = process.env[`HETZNER_TOKEN_${i}`]
-    const ClientsArray: Array<HetznerClient> = []
+    let currentHToken: string = process.env[`HETZNER_TOKEN_${i}`] || "";
+    const ClientsArray: Array<HetznerClient> = [];
 
-    while (currentHToken !== undefined) {
+    while (currentHToken) {
         i++;
 
-        ClientsArray.push(await ClientInit(currentHToken))
+        ClientsArray.push(await ClientInit(currentHToken));
 
         // Update current Token
-        currentHToken = process.env[`HETZNER_TOKEN_${i}`]
+        currentHToken = process.env[`HETZNER_TOKEN_${i}`] || "";
     }
 
-    return ClientsArray
-}
+    return ClientsArray;
+};
 
-export default HCloudClientsInit
+export default HCloudClientsInit;
