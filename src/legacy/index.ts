@@ -8,16 +8,16 @@ const client = new Discord.Client({
 });
 dotenv.config();
 
-import ConfigCheck from "./helper/ConfigCheck";
+import ConfigCheck from "../helper/ConfigCheck";
 ConfigCheck();
 
-import Logger from "./helper/Logger";
+import Logger from "../helper/Logger";
 
-import CommandListener from "./commands/CommandListener";
-import StatusUpdate from "./worker/StatusUpdate";
-import ServersUpdate from "./worker/ServersUpdate";
+import CommandListener from "../commands/CommandListener";
+import StatusUpdate from "../worker/StatusUpdate";
+import ServersUpdate from "../worker/ServersUpdate";
 
-import HCloudClientsInit from "./services/HCloudClientsInit";
+import HCloudClientsInit from "../services/HCloudClientsInit";
 
 const main = async () => {
     // Login on Discord Server

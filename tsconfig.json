@@ -19,6 +19,6 @@
             "*": ["node_modules/*", "src/types/*"]
         }
     },
-    "include": ["./src/**/*", "./src/index.ts"],
+    "include": ["./src/**/*", "src/legacy/index.ts"],
     "typeRoots": ["./node_modules/@types", "./src/types"]
 }
