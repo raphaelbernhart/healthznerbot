@@ -20,7 +20,7 @@ jobs:
             # Get current package.json Version
             - name: Get current package version
               id: package-version
-              uses: martinbeentjes/npm-get-version-action@v1.1.0
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
 
             - name: Build Docker Image
               id: build-image
@@ -41,7 +41,7 @@ jobs:
             # Get current package.json Version
             - name: Get current package version
               id: package-version
-              uses: martinbeentjes/npm-get-version-action@v1.1.0
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
 
             - name: Build Docker Image
               id: build-image
