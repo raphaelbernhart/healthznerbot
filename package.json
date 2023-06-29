@@ -27,6 +27,7 @@
     },
     "homepage": "https://github.com/raphaelbernhart/healthznerbot#readme",
     "dependencies": {
+        "@discordjs/rest": "^1.7.1",
         "axios": "^0.25.0",
         "consola": "^2.15.3",
         "discord.js": "14.11.0",
