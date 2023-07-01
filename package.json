@@ -34,7 +34,7 @@
     },
     "devDependencies": {
         "@types/dotenv": "8.2.0",
-        "@types/node": "16.11.21",
+        "@types/node": "16.18.38",
         "@types/ws": "8.2.2",
         "nodemon": "2.0.15",
         "ts-node": "^10.8.1",
