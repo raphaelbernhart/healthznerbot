@@ -22,7 +22,7 @@ export default async (interaction: ChatInputCommandInteraction) => {
     // Check if any server isn't online
     servers.forEach((server) => {
         const status = server.status;
-        if (status != "running") {
+        if (status !== "running") {
             message.push($lang.status.failed(server));
             stoppedServers.push(server.id);
             allOnline = false;
@@ -35,5 +35,5 @@ export default async (interaction: ChatInputCommandInteraction) => {
     }
 
     // TODO Check against online servers of last update
-    interaction.reply(message[0]);
+    interaction.reply(message.join("\n"));
 };
