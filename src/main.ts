@@ -1,11 +1,12 @@
 import { Interaction } from "discord.js";
 import { REST } from "@discordjs/rest";
 import dotenv from "dotenv";
-import commandController from "./commands/commandController";
+import { commands } from "./commands/commandController";
 import de from "./lang/de";
 import en from "./lang/en";
 import consola from "consola";
-import hetznerCloud from "./vendor/hetznerCloud";
+import HetznerCloud from "./vendor/hetznerCloud";
+import hooks from "./hooks";
 
 const { Routes, Client, GatewayIntentBits } = require("discord.js");
 
@@ -23,28 +24,21 @@ if (process.env.LANGUAGE === "de") {
     global.$lang = en;
 }
 
-const commands = [
-    {
-        name: "status",
-        description: "Get the server health status",
-    },
-];
-
 const rest = new REST({ version: "10" }).setToken(
     process.env.DISCORD_TOKEN || ""
 );
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-(async () => {
+const main = async () => {
     try {
-        await hetznerCloud();
+        await HetznerCloud.initHCloud();
 
         if (typeof $hcloud === "undefined") {
             consola.error("HCloud not defined");
             process.exit(1);
         }
 
-        consola.info(`Start registering ${commands.length} commands(/).`);
+        consola.start(`Start registering ${commands.length} commands(/).`);
 
         await rest.put(
             Routes.applicationCommands(process.env.DISCORD_CLIENT_ID || ""),
@@ -54,19 +48,16 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
         consola.success(
             `Successfully registered ${commands.length} commands(/).`
         );
+
+        consola.start("Logging in the bot");
+        await client.login(process.env.DISCORD_TOKEN);
     } catch (error) {
         consola.error(error);
     }
-})();
+};
 
-client.on("ready", () => {
-    consola.success(`Logged in as ${client.user.tag}!`);
-});
+// Register hooks
+hooks(client);
 
-client.on("interactionCreate", async (interaction: Interaction) => {
-    if (!interaction.isChatInputCommand()) return;
-
-    commandController(interaction);
-});
-
-client.login(process.env.DISCORD_TOKEN);
+// Run main function
+main();
