@@ -6,7 +6,7 @@ specifiers:
   '@types/node': 16.11.21
   '@types/ws': 8.2.2
   axios: ^0.25.0
-  consola: ^2.15.3
+  consola: ^3.2.2
   discord.js: 14.11.0
   dotenv: ^14.3.2
   hcloud-js: ^1.4.1
@@ -17,7 +17,7 @@ specifiers:
 dependencies:
   '@discordjs/rest': 1.7.1
   axios: 0.25.0
-  consola: 2.15.3
+  consola: 3.2.2
   discord.js: 14.11.0
   dotenv: 14.3.2
   hcloud-js: 1.4.1
@@ -394,8 +394,9 @@ packages:
       xdg-basedir: 4.0.0
     dev: true
 
-  /consola/2.15.3:
-    resolution: {integrity: sha512-9vAdYbHj6x2fLKC4+oPH0kFzY/orMZyG2Aj+kNylHxKGJ/Ed4dpNyAQYwJOdqO4zdM7XpVHmyejQDcQHrnuXbw==}
+  /consola/3.2.2:
+    resolution: {integrity: sha512-r921u0vbF4lQsoIqYvSSER+yZLPQGijOHrYcWoCNVNBZmn/bRR+xT/DgerTze/nLD9TTGzdDa378TVhx7RDOYg==}
+    engines: {node: ^14.18.0 || >=16.10.0}
     dev: false
 
   /create-require/1.1.1:
