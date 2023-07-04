@@ -1,6 +1,4 @@
-import consola from "consola";
 import { ChatInputCommandInteraction } from "discord.js";
-import { inspect } from "util";
 
 export default async (interaction: ChatInputCommandInteraction) => {
     let servers: Array<Server> = [];
