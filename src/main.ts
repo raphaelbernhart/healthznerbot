@@ -1,4 +1,3 @@
-import { Interaction } from "discord.js";
 import { REST } from "@discordjs/rest";
 import dotenv from "dotenv";
 import { commands } from "./commands/commandController";
@@ -7,6 +6,8 @@ import en from "./lang/en";
 import consola from "consola";
 import HetznerCloud from "./vendor/hetznerCloud";
 import hooks from "./hooks";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
 
 const { Routes, Client, GatewayIntentBits } = require("discord.js");
 
@@ -17,7 +18,9 @@ declare global {
 
 // Configuration
 dotenv.config();
+dayjs.extend(duration);
 
+// Globals
 if (process.env.LANGUAGE === "de") {
     global.$lang = de;
 } else if (process.env.LANGUAGE === "en") {

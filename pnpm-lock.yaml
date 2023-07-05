@@ -7,6 +7,7 @@ specifiers:
   '@types/ws': 8.2.2
   axios: ^0.25.0
   consola: ^3.2.2
+  dayjs: ^1.11.9
   discord.js: 14.11.0
   dotenv: ^14.3.2
   hcloud-js: ^1.4.1
@@ -18,6 +19,7 @@ dependencies:
   '@discordjs/rest': 1.7.1
   axios: 0.25.0
   consola: 3.2.2
+  dayjs: 1.11.9
   discord.js: 14.11.0
   dotenv: 14.3.2
   hcloud-js: 1.4.1
@@ -407,6 +409,10 @@ packages:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
     engines: {node: '>=8'}
     dev: true
+
+  /dayjs/1.11.9:
+    resolution: {integrity: sha512-QvzAURSbQ0pKdIye2txOzNaHmxtUBXerpY0FJsFXUMKbIZeFm5ht1LS/jFsrncjnmtv8HsG0W2g6c0zUjZWmpA==}
+    dev: false
 
   /debug/3.2.7_supports-color@5.5.0:
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
