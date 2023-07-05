@@ -1,4 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
+import dayjs from "dayjs";
+import axios from "axios";
 
 const mapServerStatusToColor = (status: string) => {
     switch (status) {
@@ -24,11 +26,32 @@ export default async (interaction: ChatInputCommandInteraction) => {
 
     for (let projectIndex = 0; projectIndex < $hcloud.length; projectIndex++) {
         const client = $hcloud[projectIndex];
+        const token = client.hCloudToken.token;
 
         const servers = (await client.servers.list()).servers;
 
         for (let serverIndex = 0; serverIndex < servers.length; serverIndex++) {
             const server = servers[serverIndex];
+
+            // Metrics
+            const serverId = server.id;
+            const serverMetricsPeriod = Number.parseInt(
+                process.env.SERVER_METRICS_PERIOD || "15"
+            );
+            const startDate = dayjs()
+                .subtract(serverMetricsPeriod, "minutes")
+                .toISOString();
+            const endDate = dayjs().toISOString();
+
+            const metricsResponse = await axios.get(
+                `https://api.hetzner.cloud/v1/servers/${serverId}/metrics?type=cpu,network&start=${startDate}&end=${endDate}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
             const serverMessage = [
                 { name: "Server Name", value: server.name },
                 { name: "Image", value: server.image?.description },
@@ -39,12 +62,13 @@ export default async (interaction: ChatInputCommandInteraction) => {
                         server.status.slice(1),
                     legacyValue: server.status,
                 },
-                { name: "Public IP", value: server.publicNet?.ipv4?.ip },
                 {
-                    name: "Private IP",
-                    value: server.privateNet?.[0]
-                        ? server.privateNet?.[0].ip
-                        : $lang.metrics.noPrivateNet,
+                    name: "Public IP / Private IP",
+                    value: `__${server.publicNet?.ipv4?.ip}__ / __${
+                        server.privateNet?.[0]
+                            ? server.privateNet?.[0].ip
+                            : $lang.metrics.noPrivateNet
+                    }__`,
                 },
             ];
 
