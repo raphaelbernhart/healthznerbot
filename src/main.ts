@@ -60,6 +60,7 @@ const main = async () => {
         await client.login(process.env.DISCORD_TOKEN);
     } catch (error) {
         consola.error(error);
+        process.exit(1);
     }
 
     // Register workers
