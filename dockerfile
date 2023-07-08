@@ -1,21 +1,25 @@
-FROM node:12.18.3-alpine AS build
+FROM node:18.16.1 AS build
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+RUN npm install -g pnpm
 
-RUN npm install
+RUN pnpm install
 
-COPY . /app
-RUN npm run build
+COPY src ./
+COPY tsconfig.production.json ./tsconfig.json
+RUN pnpm run build
 
-FROM node:12.18.3-alpine AS production
+FROM node:18.16.1-alpine
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
+COPY pnpm-lock.yaml ./
+RUN npm install -g pnpm
 
-RUN npm install --production
+RUN pnpm install --prod --no-lockfile
 
-ADD /src/assets /app/assets
-COPY --from=build /app/dist /app
+COPY --from=build /app/dist ./
 
-CMD [ "npm", "start" ]
+CMD pnpm run start

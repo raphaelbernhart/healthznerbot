@@ -3,52 +3,56 @@ name: Push-Image
 on:
     push:
         branches: [master]
+        tags:
+            - v*
 
     # Allows to run this workflow manually from the Actions tab
     workflow_dispatch:
 
 env:
-    DATREE_TOKEN: ${{ secrets.DATREE_TOKEN }}
+    IMAGE_NAME: healthznerbot
 
 jobs:
-    test:
-        runs-on: ubuntu-latest
+    # test:
+    #     runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v2
+    #     steps:
+    #         - uses: actions/checkout@v2
 
-            # Get current package.json Version
-            - name: Get current package version
-              id: package-version
-              uses: martinbeentjes/npm-get-version-action@v1.1.0
+    #         # Get current package.json Version
+    #         - name: Get current package version
+    #           id: package-version
+    #           uses: martinbeentjes/npm-get-version-action@v1.1.0
 
-            - name: Build Docker Image
-              id: build-image
-              run: docker build -t ${{ secrets.DOCKER_IMAGE }}:${{ steps.package-version.outputs.current-version}} .
-
-            - name: Install Datree
-              run: curl https://get.datree.io | /bin/bash
-
-            - name: Run Datree's policy check
-              run: datree test ./config/manifest.yaml
+    #         - name: Build Docker Image
+    #           id: build-image
+    #           run: docker build -t ${{ secrets.DOCKER_IMAGE }}:${{ steps.package-version.outputs.current-version}} .
 
     push:
-        needs: test
         runs-on: ubuntu-latest
+        permissions:
+            packages: write
+            contents: read
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
 
             # Get current package.json Version
             - name: Get current package version
               id: package-version
-              uses: martinbeentjes/npm-get-version-action@v1.1.0
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
 
             - name: Build Docker Image
               id: build-image
-              run: docker build -t ${{ secrets.DOCKER_IMAGE }}:${{ steps.package-version.outputs.current-version}}  .
+              run: docker build --tag ${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:${{ steps.package-version.outputs.current-version}} --label "runnumber=${GITHUB_RUN_ID}" .
 
             - name: Log into registry
-              run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin https://registry.raphaelbernhart.at/
+              run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
 
-            - name: Push Image
-              run: docker push ${{ secrets.DOCKER_IMAGE }}:${{ steps.package-version.outputs.current-version}}
+            - name: Push image
+              run: |
+                  # Push docker image (version)
+                  docker push ghcr.io/${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:${{ steps.package-version.outputs.current-version}}
+
+                  # Tag and push docker latest image
+                  docker tag ghcr.io/${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:${{ steps.package-version.outputs.current-version}} ghcr.io/${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:latest
+                  docker push ghcr.io/${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:latest
