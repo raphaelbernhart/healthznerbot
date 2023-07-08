@@ -1,25 +1,22 @@
 {
-    "ts-node": {
-        "files": true
-    },
     "compilerOptions": {
         "module": "commonjs",
         "esModuleInterop": true,
         "target": "ES2020",
         "noImplicitAny": true,
         "moduleResolution": "node",
-        "sourceMap": true,
+        "sourceMap": false,
         "resolveJsonModule": true,
         "strictNullChecks": true,
         "strict": true,
-        "outDir": "dist",
-        "rootDir": "src",
+        "outDir": "./dist",
+        "rootDir": "./",
         "baseUrl": ".",
         "paths": {
-            "*": ["src/types/*"]
+            "*": ["./types/*"]
         }
     },
-    "include": ["./src/**/*"],
+    "include": ["./**/*"],
     "exclude": ["node_modules/.pnpm/**/*"],
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "typeRoots": ["./node_modules/@types", "./types"]
 }

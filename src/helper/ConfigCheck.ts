@@ -1,36 +1,95 @@
-import axios from "axios"
-import Logger from "./Logger"
+import consola from "consola";
+import { configCheckErrorTag } from "../constants/log";
 
-const LangCheck = (): boolean => {
-    if (process.env.LANGUAGE === 'de' || process.env.LANGUAGE === 'en') {
-        return true
+export const languageCheck = (): boolean => {
+    const langEnv = process.env.LANGUAGE;
+    if (
+        !langEnv ||
+        langEnv.length < 2 ||
+        (langEnv !== "de" && langEnv !== "en")
+    ) {
+        consola.error(`${configCheckErrorTag} Language env is invalid`);
+        return false;
     }
-    else {
-        Logger.error('\x1b[31mLanguage is not configured correctly. Please configure it to "de" or "en"\x1b[0m')
-        return false
+
+    return true;
+};
+
+export const discordCheck = (): boolean => {
+    const discordEnv = [
+        process.env.DISCORD_TOKEN,
+        process.env.DISCORD_CHANNEL,
+        process.env.DISCORD_CLIENT_ID,
+        process.env.DISCORD_GUILD_ID,
+    ];
+
+    if (discordEnv.some((envVar) => !envVar?.length)) {
+        console.error(
+            `${configCheckErrorTag} Some env variable for discord is invalid`
+        );
+        return false;
     }
-}
+    return true;
+};
 
-const MemeModeCheck = async (): Promise<boolean> => {
-    try {
-        await axios.get(`http://api.giphy.com/v1?api_key=${process.env.GIPHY_API_KEY}`)
-    } catch(err: any) {
-        if (err.response.data.meta.msg !== 'Not Found!') {
-            Logger.error('\x1b[31mGiphy API key is not valid. Please get a valid API key to use the Meme Mode (https://support.giphy.com/hc/en-us/articles/360020283431-Request-A-GIPHY-API-Key).\x1b[0m')
-            return false
-        } else return true
+export const hetznerCheck = (): boolean => {
+    const hetznerEnv = [];
+
+    for (let i = 1; i < 100; i++) {
+        const envVar = process.env?.[`HETZNER_TOKEN_${i}`];
+
+        if (typeof envVar === "undefined") continue;
+
+        hetznerEnv.push(envVar);
     }
-}
 
-const MainCheck = async (): Promise<boolean> => {
-    const lang = LangCheck()
-    let MemeMode = true
-    if (process.env.MEME_MODE === 'true') MemeMode = await MemeModeCheck()
-
-    if (lang && MemeMode) return true
-    else {
-        process.exit()
+    if (hetznerEnv.some((envVar) => !envVar?.length)) {
+        console.error(
+            `${configCheckErrorTag} Some env variable for hetzner is invalid`
+        );
+        return false;
     }
-}
+    return true;
+};
 
-export default MainCheck
+export const intervalCheck = (): boolean => {
+    const statusUpdateInterval = process.env.STATUS_UPDATE_INTERVAL;
+    const serverMetricsPeriod = process.env.SERVER_METRICS_PERIOD;
+
+    if (
+        typeof statusUpdateInterval === "undefined" ||
+        typeof serverMetricsPeriod === "undefined"
+    ) {
+        consola.error(
+            `${configCheckErrorTag} Status update interval or server metrics period env variable not set`
+        );
+        return false;
+    }
+
+    if (parseFloat(statusUpdateInterval) <= 0) {
+        consola.error(
+            `${configCheckErrorTag} Status update interval env variable invalid`
+        );
+        return false;
+    }
+
+    if (parseFloat(serverMetricsPeriod) <= 0) {
+        consola.error(
+            `${configCheckErrorTag} Server metrics period env variable invalid`
+        );
+        return false;
+    }
+
+    return true;
+};
+
+export default (): void => {
+    const lang = languageCheck();
+    const discord = discordCheck();
+    const hetzner = hetznerCheck();
+    const intverval = intervalCheck();
+
+    if (!lang || !discord || !hetzner || !intverval) {
+        process.exit(1);
+    }
+};
