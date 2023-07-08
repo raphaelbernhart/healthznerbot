@@ -5,7 +5,7 @@
     "compilerOptions": {
         "module": "commonjs",
         "esModuleInterop": true,
-        "target": "ES2018",
+        "target": "ES2020",
         "noImplicitAny": true,
         "moduleResolution": "node",
         "sourceMap": true,
@@ -16,9 +16,10 @@
         "rootDir": "src",
         "baseUrl": ".",
         "paths": {
-            "*": ["node_modules/*", "src/types/*"]
+            "*": ["src/types/*"]
         }
     },
-    "include": ["./src/**/*", "src/legacy/index.ts"],
+    "include": ["./src/**/*"],
+    "exclude": ["./src/legacy/**/*", "node_modules/.pnpm/**/*"],
     "typeRoots": ["./node_modules/@types", "./src/types"]
 }
