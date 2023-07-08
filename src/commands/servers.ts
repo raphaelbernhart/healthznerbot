@@ -52,6 +52,26 @@ export default async (interaction: ChatInputCommandInteraction) => {
                 }
             );
 
+            // Metrics calculation
+            const metrics = metricsResponse.data.metrics;
+            const timeSeries = metrics.time_series;
+            const cpuValues = timeSeries.cpu.values;
+            const netInValues = timeSeries["network.0.bandwidth.in"].values;
+            const netOutValues = timeSeries["network.0.bandwidth.out"].values;
+
+            const cpuAverage =
+                cpuValues
+                    .map((_: string[]) => parseFloat(_[1]))
+                    .reduce((a: any, b: any) => a + b, 0) / cpuValues.length;
+            const networkInAverage =
+                netInValues
+                    .map((_: string[]) => parseFloat(_[1]))
+                    .reduce((a: any, b: any) => a + b, 0) / netInValues.length;
+            const networkOutAverage =
+                netOutValues
+                    .map((_: string[]) => parseFloat(_[1]))
+                    .reduce((a: any, b: any) => a + b, 0) / netOutValues.length;
+
             const serverMessage = [
                 { name: "Server Name", value: server.name },
                 { name: "Image", value: server.image?.description },
@@ -69,6 +89,31 @@ export default async (interaction: ChatInputCommandInteraction) => {
                             ? server.privateNet?.[0].ip
                             : $lang.metrics.noPrivateNet
                     }__`,
+                },
+                { name: "", value: "\u200B" },
+                {
+                    name: "CPU",
+                    value: `${Intl.NumberFormat(process.env.LANGUAGE, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    }).format(cpuAverage)}%`,
+                    inline: true,
+                },
+                {
+                    name: "Network In",
+                    value: `${Intl.NumberFormat(process.env.LANGUAGE, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    }).format(networkInAverage / 1000)} Kb/s`,
+                    inline: true,
+                },
+                {
+                    name: "Network Out",
+                    value: `${Intl.NumberFormat(process.env.LANGUAGE, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    }).format(networkOutAverage / 1000)} Kb/s`,
+                    inline: true,
                 },
             ];
 
