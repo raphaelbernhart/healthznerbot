@@ -10,7 +10,7 @@ export class CommandInterval {
 
         this.interval = setInterval(callback, intervalDuration);
 
-        consola.info(`Finished registering of ${name} command worker`);
+        consola.ready(`Finished registering of ${name} command worker`);
     }
 }
 
