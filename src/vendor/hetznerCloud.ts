@@ -1,5 +1,6 @@
 import hcloud from "hcloud-js";
 import consola from "consola";
+import { hetznerErrorTag } from "../constants/log";
 
 export default class HetznerCloud {
     static hCloudClients: Array<HetznerClient>;
@@ -14,10 +15,10 @@ export default class HetznerCloud {
 
                 if (err.code === "unauthorized") {
                     consola.error(
-                        `[Hetzner API] Could not authenticate token '${client.hCloudToken.name}'`
+                        `${hetznerErrorTag} Could not authenticate token '${client.hCloudToken.name}'`
                     );
                 } else {
-                    consola.error(`[Hetzner API] ${err.message}`);
+                    consola.error(`${hetznerErrorTag} ${err.message}`);
                 }
                 process.exit(1);
             });
@@ -57,7 +58,7 @@ export default class HetznerCloud {
             const client = await new hcloud.Client(token);
             return client;
         } catch (err: any) {
-            consola.error(`[Hetzner API] ${err.message}`);
+            consola.error(`${hetznerErrorTag} ${err.message}`);
             process.exit(1);
         }
     }
