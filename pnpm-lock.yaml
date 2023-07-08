@@ -4,7 +4,7 @@ specifiers:
   '@discordjs/rest': ^1.7.1
   '@types/dotenv': 8.2.0
   '@types/node': 18.16.19
-  '@types/ws': 8.2.2
+  '@types/ws': 8.5.5
   axios: ^1.4.0
   consola: ^3.2.3
   dayjs: ^1.11.9
@@ -27,7 +27,7 @@ dependencies:
 devDependencies:
   '@types/dotenv': 8.2.0
   '@types/node': 18.16.19
-  '@types/ws': 8.2.2
+  '@types/ws': 8.5.5
   nodemon: 2.0.22
   ts-node: 10.9.1_pqdfkuhuhnwv2d7uogwywwxtqq
   typescript: 5.1.6
@@ -167,17 +167,10 @@ packages:
   /@types/node/18.16.19:
     resolution: {integrity: sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==}
 
-  /@types/ws/8.2.2:
-    resolution: {integrity: sha512-NOn5eIcgWLOo6qW8AcuLZ7G8PycXu0xTxxkS6Q18VWFxgPUSOwV0pBj2a/4viNZVu25i7RIB7GttdkAIUUXOOg==}
-    dependencies:
-      '@types/node': 18.16.19
-    dev: true
-
   /@types/ws/8.5.5:
     resolution: {integrity: sha512-lwhs8hktwxSjf9UaZ9tG5M03PGogvFaH8gUgLNbN9HKIg0dvv6q+gkSuJ8HN4/VbyxkuLzCjlN7GquQ0gUJfIg==}
     dependencies:
       '@types/node': 18.16.19
-    dev: false
 
   /@vladfrangu/async_event_emitter/2.2.2:
     resolution: {integrity: sha512-HIzRG7sy88UZjBJamssEczH5q7t5+axva19UbZLO6u0ySbYPrwzWiXBcC0WuHyhKKoeCyneH+FvYzKQq/zTtkQ==}
