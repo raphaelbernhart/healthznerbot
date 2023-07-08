@@ -51,26 +51,26 @@ interface ServersEndpoint {
 }
 
 interface Server {
-    backup_window: string;
+    backupWindow: string;
     created: string;
     datacenter: Record<string, any>;
     id: number;
     image: Record<string, any>;
-    included_traffic: number;
-    ingoing_traffic: number;
+    includedTraffic: number;
+    ingoingTraffic: number;
     iso: Record<string, any>;
     labels: Record<string, any>;
-    load_balancers: Array<number>;
+    loadBalancers: Array<number>;
     locked: boolean;
     name: string;
-    outgoing_traffic: number;
-    placement_group: object;
-    primary_disk_size: number;
-    private_net: Array<Record<string, any>>;
+    outgoingTraffic: number;
+    placementGroup: object;
+    primaryDiskSize: number;
+    privateNet: Array<Record<string, any>>;
     protection: Record<string, any>;
-    public_net: Record<string, any>;
-    rescue_enabled: boolean;
-    server_type: Record<string, any>;
+    publicNet: Record<string, any>;
+    rescueEnabled: boolean;
+    serverType: Record<string, any>;
     status:
         | "initializing"
         | "starting"
