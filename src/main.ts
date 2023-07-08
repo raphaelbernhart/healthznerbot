@@ -6,6 +6,7 @@ import en from "./lang/en";
 import consola from "consola";
 import HetznerCloud from "./vendor/hetznerCloud";
 import hooks from "./hooks";
+import worker from "./worker/index";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 
@@ -57,6 +58,9 @@ const main = async () => {
     } catch (error) {
         consola.error(error);
     }
+
+    // Register workers
+    worker(client);
 };
 
 // Register hooks

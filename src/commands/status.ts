@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
 
-export default async (interaction: ChatInputCommandInteraction) => {
+export const getStatus = async (): Promise<string> => {
     let servers: Array<Server> = [];
 
     // Map all servers of all hcloud clients in as an array
@@ -14,24 +14,27 @@ export default async (interaction: ChatInputCommandInteraction) => {
     }
 
     let allOnline = true;
-    let message: Array<any> = [];
+    let messages: Array<any> = [];
     let stoppedServers: Array<number> = [];
 
     // Check if any server isn't online
     servers.forEach((server) => {
         const status = server.status;
         if (status !== "running") {
-            message.push($lang.status.failed(server));
+            messages.push($lang.status.failed(server));
             stoppedServers.push(server.id);
             allOnline = false;
         }
     });
 
     if (allOnline) {
-        interaction.reply($lang?.status.success);
-        return;
+        return $lang?.status.success;
     }
+    return messages.join("\n");
+};
 
-    // TODO Check against online servers of last update
-    interaction.reply(message.join("\n"));
+export default async (interaction: ChatInputCommandInteraction) => {
+    const message = await getStatus();
+
+    interaction.reply(message);
 };
