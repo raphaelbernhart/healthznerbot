@@ -9,6 +9,8 @@ export class CommandInterval {
         consola.info(`Registering ${name} command worker`);
 
         this.interval = setInterval(callback, intervalDuration);
+
+        consola.info(`Finished registering of ${name} command worker`);
     }
 }
 
