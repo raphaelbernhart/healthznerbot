@@ -9,6 +9,7 @@ import hooks from "./hooks";
 import worker from "./worker/index";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
+import ConfigCheck from "./helper/ConfigCheck";
 
 const { Routes, Client, GatewayIntentBits } = require("discord.js");
 
@@ -20,6 +21,8 @@ declare global {
 // Configuration
 dotenv.config();
 dayjs.extend(duration);
+
+ConfigCheck();
 
 // Globals
 if (process.env.LANGUAGE === "de") {
