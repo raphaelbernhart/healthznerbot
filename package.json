@@ -7,8 +7,8 @@
         "start": "node .",
         "dev": "nodemon .",
         "build": "tsc -b",
-        "docker build": "docker build -t registry.raphaelbernhart.at/raphaelbernhart/healthznerbot:$npm_package_version .",
-        "docker push": "docker push registry.raphaelbernhart.at/raphaelbernhart/healthznerbot:$npm_package_version"
+        "docker:build": "docker build -t ghcr.io/raphaelbernhart/healthznerbot:$npm_package_version .",
+        "docker:push": "docker push ghcr.io/raphaelbernhart/healthznerbot:$npm_package_version"
     },
     "repository": {
         "type": "git",
