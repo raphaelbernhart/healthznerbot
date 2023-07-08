@@ -35,7 +35,7 @@ export default async (interaction: ChatInputCommandInteraction) => {
 
             // Metrics
             const serverId = server.id;
-            const serverMetricsPeriod = Number.parseInt(
+            const serverMetricsPeriod = Number.parseFloat(
                 process.env.SERVER_METRICS_PERIOD || "15"
             );
             const startDate = dayjs()
