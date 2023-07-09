@@ -2,7 +2,7 @@ name: Push-Image
 
 on:
     push:
-        branches: [master]
+        branches: [main]
         tags:
             - v*
 
@@ -54,5 +54,5 @@ jobs:
             - name: Tag and push image (latest)
               run: |
                   # Tag and push docker latest image
-                  docker tag ghcr.io/${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:latest ghcr.io/${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:${{ steps.package-version.outputs.current-version}}
+                  docker tag ghcr.io/${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:${{ steps.package-version.outputs.current-version}} ghcr.io/${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:latest
                   docker push ghcr.io/${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:latest
