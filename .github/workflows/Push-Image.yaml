@@ -54,5 +54,5 @@ jobs:
                   docker push ghcr.io/${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:${{ steps.package-version.outputs.current-version}}
 
                   # Tag and push docker latest image
-                  docker tag ghcr.io/${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:${{ steps.package-version.outputs.current-version}} ghcr.io/${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:latest
+                  docker tag ghcr.io/${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:latest ghcr.io/${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:${{ steps.package-version.outputs.current-version}}
                   docker push ghcr.io/${{ github.repository_owner }}/${{ secrets.DOCKER_IMAGE }}:latest
