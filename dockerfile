@@ -1,4 +1,4 @@
-FROM node:18.16.1 AS build
+FROM node:21.3.0 AS build
 WORKDIR /app
 
 COPY package.json ./
@@ -11,7 +11,7 @@ COPY src ./
 COPY tsconfig.production.json ./tsconfig.json
 RUN pnpm run build
 
-FROM node:18.16.1-alpine
+FROM node:21.3.0-alpine
 WORKDIR /app
 
 COPY package.json ./
