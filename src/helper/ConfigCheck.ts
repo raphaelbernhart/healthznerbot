@@ -16,19 +16,40 @@ export const languageCheck = (): boolean => {
 };
 
 export const discordCheck = (): boolean => {
-    const discordEnv = [
-        process.env.DISCORD_TOKEN,
-        process.env.DISCORD_CHANNEL,
-        process.env.DISCORD_CLIENT_ID,
-        process.env.DISCORD_GUILD_ID,
+    const discordEnvKeys = [
+        "DISCORD_TOKEN",
+        "DISCORD_CHANNEL",
+        "DISCORD_CLIENT_ID",
+        "DISCORD_GUILD_ID",
     ];
 
-    if (discordEnv.some((envVar) => !envVar?.length)) {
-        console.error(
-            `${configCheckErrorTag} Some env variable for discord is invalid`
-        );
+    const discordEnv = Object.fromEntries(
+        Object.entries(process.env).filter((entry) =>
+            entry[0].includes("DISCORD_")
+        )
+    );
+
+    // Check if any key is nullish or empty string
+    if (
+        discordEnvKeys.some((key) => {
+            const env = discordEnv[key];
+            const isFalsy =
+                typeof env === "undefined" ||
+                env === null ||
+                (typeof env === "string" && env.trim().length === 0);
+
+            if (isFalsy) {
+                consola.error(
+                    `${configCheckErrorTag} ${key} variable for discord is invalid`
+                );
+            }
+
+            return isFalsy;
+        })
+    ) {
         return false;
     }
+
     return true;
 };
 
