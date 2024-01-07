@@ -1,6 +1,17 @@
 import hcloud from "hcloud-js";
 import consola from "consola";
 import { hetznerErrorTag } from "../constants/log";
+import axios from "axios";
+
+interface fetchServerMetricsOptions {
+    serverId: number;
+    startDate: string;
+    endDate: string;
+    token: {
+        key: string;
+        value: string;
+    };
+}
 
 export default class HetznerCloud {
     static hCloudClients: Array<HetznerClient>;
@@ -61,5 +72,22 @@ export default class HetznerCloud {
             consola.error(`${hetznerErrorTag} ${err.message}`);
             process.exit(1);
         }
+    }
+}
+
+export async function fetchServerMetrics(options: fetchServerMetricsOptions) {
+    try {
+        return await axios.get(
+            `https://api.hetzner.cloud/v1/servers/${options.serverId}/metrics?type=cpu,network&start=${options.startDate}&end=${options.endDate}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${options.token.value}`,
+                },
+            }
+        );
+    } catch (err: any) {
+        consola.error(
+            `[Hetzner] Metrics request failed for token ${options.token.key}\nStatus: ${err.response.status}\nCode: ${err.code}`
+        );
     }
 }

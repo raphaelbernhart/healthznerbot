@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import dayjs from "dayjs";
 import axios from "axios";
+import { fetchServerMetrics } from "../vendor/hetznerCloud";
 
 const mapServerStatusToColor = (status: string) => {
     switch (status) {
@@ -43,14 +44,23 @@ export default async (interaction: ChatInputCommandInteraction) => {
                 .toISOString();
             const endDate = dayjs().toISOString();
 
-            const metricsResponse = await axios.get(
-                `https://api.hetzner.cloud/v1/servers/${serverId}/metrics?type=cpu,network&start=${startDate}&end=${endDate}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const metricsResponse = await fetchServerMetrics({
+                serverId,
+                startDate,
+                endDate,
+                token: {
+                    key: $hcloud[projectIndex].hCloudToken.name,
+                    value: token,
+                },
+            });
+
+            if (typeof metricsResponse === "undefined") {
+                await interaction.reply({
+                    content:
+                        "An error occurred while fetching metrics from the hetzner api",
+                });
+                return;
+            }
 
             // Metrics calculation
             const metrics = metricsResponse.data.metrics;
