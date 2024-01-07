@@ -10,12 +10,14 @@ import worker from "./worker/index";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import ConfigCheck from "./helper/ConfigCheck";
+import { Client as DiscordClient } from "discord.js";
 
 const { Routes, Client, GatewayIntentBits } = require("discord.js");
 
 declare global {
     var $lang: Record<string, any>;
     var $hcloud: HetznerClient[];
+    var $discordClient: DiscordClient;
 }
 
 // Configuration
@@ -35,6 +37,7 @@ const rest = new REST({ version: "10" }).setToken(
     process.env.DISCORD_TOKEN || ""
 );
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+global.$discordClient = client;
 
 const main = async () => {
     try {
