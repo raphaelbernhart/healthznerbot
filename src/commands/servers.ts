@@ -31,6 +31,7 @@ export default async (interaction: ChatInputCommandInteraction) => {
     for (let projectIndex = 0; projectIndex < $hcloud.length; projectIndex++) {
         const client = $hcloud[projectIndex];
         const token = client.hCloudToken.token;
+        const tokenName = $hcloud[projectIndex].hCloudToken.name;
 
         const servers = (await client.servers.list()).servers;
 
@@ -39,9 +40,6 @@ export default async (interaction: ChatInputCommandInteraction) => {
 
             // Metrics
             const serverId = server.id;
-            const serverMetricsPeriod = Number.parseFloat(
-                process.env.SERVER_METRICS_PERIOD || "15"
-            );
             const startDate = dayjs()
                 .subtract(serverMetricsPeriod, "minutes")
                 .toISOString();
@@ -52,15 +50,14 @@ export default async (interaction: ChatInputCommandInteraction) => {
                 startDate,
                 endDate,
                 token: {
-                    key: $hcloud[projectIndex].hCloudToken.name,
+                    key: tokenName,
                     value: token,
                 },
             });
 
             if (typeof metricsResponse === "undefined") {
                 await interaction.reply({
-                    content:
-                        "An error occurred while fetching metrics from the hetzner api",
+                    content: `An error occurred while fetching metrics from the hetzner api (${tokenName})`,
                 });
                 return;
             }
