@@ -24,6 +24,9 @@ const mapServerStatusToColor = (status: string) => {
 
 export default async (interaction: ChatInputCommandInteraction) => {
     const serverMessages = [];
+    const serverMetricsPeriod = Number.parseFloat(
+        process.env.SERVER_METRICS_PERIOD || "15"
+    );
 
     for (let projectIndex = 0; projectIndex < $hcloud.length; projectIndex++) {
         const client = $hcloud[projectIndex];
@@ -140,7 +143,7 @@ export default async (interaction: ChatInputCommandInteraction) => {
             fields: serverMessage,
             timestamp: new Date().toISOString(),
             footer: {
-                text: "Healthzner Bot",
+                text: `(${serverMetricsPeriod}min) Healthzner Bot`,
             },
         })),
     });
