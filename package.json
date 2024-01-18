@@ -1,10 +1,10 @@
 {
     "name": "healthznerbot",
-    "version": "2.0.4",
+    "version": "2.1.0",
     "description": "A discord bot to get periodically updates of the health status of your hetzner cloud machines.",
     "main": "main.js",
     "engines": {
-        "node": ">=18.0.0 <19.0.0"
+        "node": ">=20.11.0"
     },
     "scripts": {
         "start": "node .",
@@ -31,7 +31,7 @@
     "homepage": "https://github.com/raphaelbernhart/healthznerbot#readme",
     "dependencies": {
         "@discordjs/rest": "^2.2.0",
-        "axios": "^1.6.2",
+        "axios": "^1.6.5",
         "consola": "^3.2.3",
         "dayjs": "^1.11.10",
         "discord.js": "14.14.1",
@@ -39,9 +39,9 @@
         "hcloud-js": "^1.4.1"
     },
     "devDependencies": {
-        "@types/node": "18.19.0",
+        "@types/node": "20.11.0",
         "@types/ws": "8.5.10",
-        "nodemon": "3.0.2",
+        "nodemon": "3.0.3",
         "ts-node": "^10.9.2",
         "typescript": "5.3.3"
     }

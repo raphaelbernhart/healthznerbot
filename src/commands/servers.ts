@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction } from "discord.js";
 import dayjs from "dayjs";
 import axios from "axios";
+import { fetchServerMetrics } from "../vendor/hetznerCloud";
 
 const mapServerStatusToColor = (status: string) => {
     switch (status) {
@@ -23,10 +24,17 @@ const mapServerStatusToColor = (status: string) => {
 
 export default async (interaction: ChatInputCommandInteraction) => {
     const serverMessages = [];
+    const serverMetricsPeriod = Number.parseFloat(
+        process.env.SERVER_METRICS_PERIOD || "15"
+    );
+
+    // Defer reply to fix bug when metrics gathering takes longer than 3sec
+    interaction.deferReply({ ephemeral: true });
 
     for (let projectIndex = 0; projectIndex < $hcloud.length; projectIndex++) {
         const client = $hcloud[projectIndex];
         const token = client.hCloudToken.token;
+        const tokenName = $hcloud[projectIndex].hCloudToken.name;
 
         const servers = (await client.servers.list()).servers;
 
@@ -35,22 +43,27 @@ export default async (interaction: ChatInputCommandInteraction) => {
 
             // Metrics
             const serverId = server.id;
-            const serverMetricsPeriod = Number.parseFloat(
-                process.env.SERVER_METRICS_PERIOD || "15"
-            );
             const startDate = dayjs()
                 .subtract(serverMetricsPeriod, "minutes")
                 .toISOString();
             const endDate = dayjs().toISOString();
 
-            const metricsResponse = await axios.get(
-                `https://api.hetzner.cloud/v1/servers/${serverId}/metrics?type=cpu,network&start=${startDate}&end=${endDate}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const metricsResponse = await fetchServerMetrics({
+                serverId,
+                startDate,
+                endDate,
+                token: {
+                    key: tokenName,
+                    value: token,
+                },
+            });
+
+            if (typeof metricsResponse === "undefined") {
+                await interaction.reply({
+                    content: `An error occurred while fetching metrics from the hetzner api (${tokenName})`,
+                });
+                return;
+            }
 
             // Metrics calculation
             const metrics = metricsResponse.data.metrics;
@@ -121,7 +134,7 @@ export default async (interaction: ChatInputCommandInteraction) => {
         }
     }
 
-    interaction.reply({
+    interaction.editReply({
         embeds: serverMessages.map((serverMessage) => ({
             color: mapServerStatusToColor(
                 serverMessage.find((msg) => msg.name === "Status")
@@ -130,7 +143,7 @@ export default async (interaction: ChatInputCommandInteraction) => {
             fields: serverMessage,
             timestamp: new Date().toISOString(),
             footer: {
-                text: "Healthzner Bot",
+                text: `(${serverMetricsPeriod}min) Healthzner Bot`,
             },
         })),
     });

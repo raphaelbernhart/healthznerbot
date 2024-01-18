@@ -3,9 +3,10 @@ import dayjs from "dayjs";
 import { Client } from "discord.js";
 import { CommandInterval } from ".";
 import { getStatus } from "../commands/status";
+import { getLastMessageOfBot } from "../helper/Discord";
 
 export default (client: Client) => {
-    let lastStatus: string;
+    let lastStatus: string | true;
 
     const callback = async () => {
         const status = await getStatus();
@@ -33,7 +34,21 @@ export default (client: Client) => {
         }
         lastStatus = status;
 
-        channel.send(status);
+        const message = status === true ? $lang.success : status;
+
+        // Check if last message of bot is the same as this time
+        const lastBotMessage = await getLastMessageOfBot(client);
+        if (
+            typeof lastBotMessage !== "undefined" &&
+            lastBotMessage.content === message
+        ) {
+            consola.debug(
+                "Status is the same since the last time. Status update not sent. (from old session)"
+            );
+            return;
+        }
+
+        channel.send(message);
         consola.debug("Status update sent");
     };
 

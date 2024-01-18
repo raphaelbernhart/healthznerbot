@@ -1,6 +1,8 @@
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, TextBasedChannel } from "discord.js";
 
-export const getStatus = async (): Promise<string> => {
+export const getStatus = async (
+    channel?: TextBasedChannel | undefined | null
+): Promise<string | true> => {
     let servers: Array<Server> = [];
 
     // Map all servers of all hcloud clients in as an array
@@ -28,13 +30,34 @@ export const getStatus = async (): Promise<string> => {
     });
 
     if (allOnline) {
+        // Don't send status if last message was also allOnline message
+        if (typeof channel !== "undefined" && channel !== null) {
+            const lastFiveMessages = await channel.messages.fetch({ limit: 5 });
+            if (
+                lastFiveMessages.some(
+                    (message) =>
+                        message.client.user.id === $discordClient.user?.id &&
+                        message.content.includes($lang?.status.success)
+                )
+            ) {
+                return true;
+            }
+        }
+
         return $lang?.status.success;
     }
     return messages.join("\n");
 };
 
 export default async (interaction: ChatInputCommandInteraction) => {
-    const message = await getStatus();
+    interaction.deferReply({ ephemeral: true });
 
-    interaction.reply(message);
+    const message = await getStatus(interaction.channel);
+
+    if (message === true) {
+        interaction.editReply($lang.status.success);
+        return;
+    }
+
+    interaction.editReply(message);
 };
