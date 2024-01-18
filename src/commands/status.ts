@@ -50,12 +50,14 @@ export const getStatus = async (
 };
 
 export default async (interaction: ChatInputCommandInteraction) => {
+    interaction.deferReply({ ephemeral: true });
+
     const message = await getStatus(interaction.channel);
 
     if (message === true) {
-        interaction.reply($lang.status.success);
+        interaction.editReply($lang.status.success);
         return;
     }
 
-    interaction.reply(message);
+    interaction.editReply(message);
 };

@@ -28,6 +28,9 @@ export default async (interaction: ChatInputCommandInteraction) => {
         process.env.SERVER_METRICS_PERIOD || "15"
     );
 
+    // Defer reply to fix bug when metrics gathering takes longer than 3sec
+    interaction.deferReply({ ephemeral: true });
+
     for (let projectIndex = 0; projectIndex < $hcloud.length; projectIndex++) {
         const client = $hcloud[projectIndex];
         const token = client.hCloudToken.token;
@@ -131,7 +134,7 @@ export default async (interaction: ChatInputCommandInteraction) => {
         }
     }
 
-    interaction.reply({
+    interaction.editReply({
         embeds: serverMessages.map((serverMessage) => ({
             color: mapServerStatusToColor(
                 serverMessage.find((msg) => msg.name === "Status")
